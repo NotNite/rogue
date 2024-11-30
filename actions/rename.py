@@ -66,7 +66,7 @@ class Rename(BackgroundTaskThread):
                 var = self.bv.get_data_var_at(ea)
                 instance_type = self.bv.get_type_by_name(class_name)
                 if instance_type and pointer:
-                    instance_type = TypeBuilder.pointer(instance_type)
+                    instance_type = TypeBuilder.pointer(self.bv.arch, instance_type)
                 if not instance_type:
                     instance_type = self.void_ptr
 

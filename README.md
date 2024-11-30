@@ -11,9 +11,10 @@ A Binary Ninja plugin for FINAL FANTASY XIV.
 ## Features
 
 - `Rename executable`: Apply names from FFXIVClientStructs' data.yml
+- `Import structs`: Import structs from FFXIVClientStructs' ffxiv_structs.yml
 - `Comment log messages`: Adds comments to ShowLogMessage and whatnot
 
 ## TODO
 
-- [ ] Struct importing
+- [x] Struct importing
 - [ ] Excel getters
