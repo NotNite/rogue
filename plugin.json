@@ -1,0 +1,20 @@
+{
+  "pluginmetadataversion": 2,
+  "name": "Rogue",
+  "type": [
+    "core",
+    "ui"
+  ],
+  "api": [
+    "python3"
+  ],
+  "description": "A Binary Ninja plugin for FINAL FANTASY XIV",
+  "dependencies": {
+    "other": [
+      "The C# helper executable must be built manually."
+    ]
+  },
+  "version": "1.0.0",
+  "author": "NotNite",
+  "minimumbinaryninjaversion": 3164
+}

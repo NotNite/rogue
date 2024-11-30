@@ -1,0 +1,6 @@
+# Helper program
+.vs/
+.idea/
+bin/
+obj/
+*.user
