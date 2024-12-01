@@ -100,44 +100,23 @@ class Rename(BackgroundTaskThread):
 
                 ea = vtbl["ea"]
                 ea = self.parse_number(ea)
-                vtbl_type = self.void_ptr
-
-                existing_vtbl_type = self.bv.get_type_by_name(vtbl_type_name)
-                if existing_vtbl_type:
-                    vtbl_type = existing_vtbl_type.mutable_copy()
 
                 if "vfuncs" in data and data["vfuncs"]:
-                    type_builder = TypeBuilder.structure()
-                    type_builder.propagate_data_var_refs = True
-                    if "base" in data:
-                        base_type = self.bv.get_type_by_name(data["base"])
-                        if base_type:
-                            type_builder.base_structures = [base_type]
-
                     for idx, name in data["vfuncs"].items():
                         offset = int(idx) * 8
 
-                        func_type = self.void_ptr
                         func_addr = self.bv.read_pointer(ea + offset)
                         func = self.bv.get_function_at(func_addr)
                         if func:
-                            func_type = TypeBuilder.pointer(self.bv.arch, func.type)
                             func.name = f"{class_name}.{name}"
-
-                        existing_field = type_builder.member_at_offset(offset)
-                        if existing_field:
-                            type_builder.remove(offset)
-                        type_builder.insert(offset, func_type, name)
-
-                    self.bv.define_user_type(vtbl_type_name, type_builder)
-                    vtbl_type = self.bv.get_type_by_name(vtbl_type_name)  # lol wut
 
                 var = self.bv.get_data_var_at(ea)
                 if var:
-                    var.type = vtbl_type
                     var.name = vtbl_type_name
                 else:
-                    var = self.bv.define_user_data_var(ea, vtbl_type, vtbl_type_name)
+                    var = self.bv.define_user_data_var(
+                        ea, self.void_ptr, vtbl_type_name
+                    )
 
 
 def rename(bv: BinaryView):
