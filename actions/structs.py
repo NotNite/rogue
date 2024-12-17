@@ -94,6 +94,9 @@ class Structs(BackgroundTaskThread):
             return None
 
     def parse_type(self, type_str: str):
+        if type_str is None:
+            return None
+
         # Misc
         if type_str == "void":
             return Type.void()
@@ -221,7 +224,12 @@ class Structs(BackgroundTaskThread):
         for member_function in struct["member_functions"]:
             name = member_function["name"]
             signature = member_function["signature"]
-            return_type = member_function["return_type"]
+            return_type = (
+                member_function["return_type"]
+                if "return_type" in member_function
+                else None
+            )
+            return_type = self.parse_type(return_type)
 
             addr = self.get_func_ea_by_sig(signature)
             if addr is None:
@@ -234,7 +242,9 @@ class Structs(BackgroundTaskThread):
                 continue
 
             func.name = f"{type}.{name}"
-            func.return_type = self.parse_type(return_type)
+
+            if return_type:
+                func.return_type = return_type
 
             for i, parameter in enumerate(member_function["parameters"]):
                 param_name = parameter["name"]
@@ -278,12 +288,21 @@ class Structs(BackgroundTaskThread):
             if class_of_func.startswith("sub") or class_of_func == type:
                 func.name = f"{type}.{name}"
 
-                return_type = virtual_function["return_type"]
+                return_type = (
+                    virtual_function["return_type"]
+                    if "return_type" in virtual_function
+                    else None
+                )
                 return_type = self.parse_type(return_type)
                 if return_type:
                     func.return_type = return_type
 
-                for i, parameter in enumerate(virtual_function["parameters"]):
+                parameters = (
+                    virtual_function["parameters"]
+                    if "parameters" in virtual_function
+                    else []
+                )
+                for i, parameter in enumerate(parameters):
                     if i >= len(func.parameter_vars):
                         # self.logger.log_warn(
                         #     f"Function {name} has more parameters than expected"
